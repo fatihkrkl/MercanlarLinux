@@ -1,5 +1,3 @@
-import 'package:mercanlarlinux/View/Barkod_Sayfa.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mercanlarlinux/View/Imza_Sayfa.dart';
 
@@ -86,13 +84,11 @@ class Combo_Bir_State extends State<KargoEkle> {
                       child: TextField(
                     decoration: InputDecoration(hintText: "Barkod"),
                   )),
-                  Expanded(child: IconButton(onPressed: ()=> Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ImzaSayfa(imza: true)),
-                  ), icon: Icon(Icons.barcode_reader)))
+                  Expanded(child: IconButton(onPressed: ()=> Navigator.push(context, MaterialPageRoute(builder: (context) => ImzaSayfa(imza: true)),),
+                      icon: Icon(Icons.barcode_reader)))
                 ],
               )),
-              Expanded(
+              const Expanded(
                   child: Row(
                 children: [
                   Expanded(flex: 1,child: Text("Araç")),
@@ -121,8 +117,6 @@ class Combo_Bir_State extends State<KargoEkle> {
                       onChanged: (String? newValue) {
                         setState(() {
                           var selectedValue = newValue;
-                          print(selectedValue);
-
                         });
                       },
                     ),

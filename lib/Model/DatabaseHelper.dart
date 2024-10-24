@@ -31,35 +31,84 @@ class DatabaseHelper {
       version: 1,
       onCreate: (db, version) async {
         await db.execute(
-          'CREATE TABLE items(plaka TEXT PRIMARY KEY)',
+          'CREATE TABLE items(plaka TEXT PRIMARY KEY, sofor TEXT, per TEXT, sube TEXT)',
         );
         await db.execute(
-          'CREATE TABLE kargo(barkod INTEGER PRIMARY KEY, name TEXT,plaka TEXT)',
+          'CREATE TABLE kargo(barkod INTEGER PRIMARY KEY, plaka TEXT, tip TEXT, evrakno TEXT, tarih TEXT, carino TEXT, unvan TEXT, resim TEXT, imza TEXT, teslimtarih TEXT, teslimalan TEXT, islem TEXT)',
         );
       },
     );
   }
 
-
-
-  // Insert an item into the database
-  Future<void> insertItem(String plaka) async {
+  Future<void> insertItemD(String plaka) async {
     final db = await database;
     await db.insert(
       'items',
-      {'plaka': plaka},
+      {'plaka': plaka,
+        'sofor': "sofor",
+        'per': "per",
+        'sube': "sube"},
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
-  Future<void> insertKargo(String name,String plaka) async {
+  // Insert an item into the database
+  Future<void> insertItem(String plaka,String sofor,String per,String sube) async {
+    final db = await database;
+    await db.insert(
+      'items',
+      {'plaka': plaka,
+        'sofor': sofor,
+        'per': per,
+        'sube': sube},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  Future<void> insertKargoD(int barkod,String plaka) async {
     try {
       final db = await database;
       await db.insert(
         'kargo',
         {
-          'name': name,
+          'barkod': barkod,
           'plaka': plaka,
+          'tip': "tip",
+          'evrakno': "evrakno",
+          'tarih': "tarih",
+          'carino': "carino",
+          'unvan': "unvan",
+          'resim': "resim",
+          'imza': "imza",
+          'teslimtarih': "teslimtarih",
+          'teslimalan': "teslimalan",
+          'islem': "islem",
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace,
+      );
+    } catch (e) {
+      print('Error inserting kargo: $e'); // Log the error
+    }
+  }
+
+  Future<void> insertKargo(int barkod,String plaka,String tip,String evrakno,String tarih,String carino,String unvan,String resim,String imza,String teslimtarih,String teslimalan,String islem) async {
+    try {
+      final db = await database;
+      await db.insert(
+        'kargo',
+        {
+          'barkod': barkod,
+          'plaka': plaka,
+          'tip': tip,
+          'evrakno': evrakno,
+          'tarih': tarih,
+          'carino': carino,
+          'unvan': unvan,
+          'resim': resim,
+          'imza': imza,
+          'teslimtarih': teslimtarih,
+          'teslimalan': teslimalan,
+          'islem': islem,
         },
         conflictAlgorithm: ConflictAlgorithm.replace,
       );
@@ -76,27 +125,6 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> fetchKargo(String plaka) async {
     final db = await database;
     return await db.query('kargo',where: 'plaka = ?', whereArgs: [plaka],);
-  }
-
-  // Update an item
-  Future<void> updateItem(String plaka, String newName) async {
-    final db = await database;
-    await db.update(
-      'items',
-      {'name': newName},
-      where: 'plaka = ?',
-      whereArgs: [plaka],
-    );
-  }
-
-  Future<void> updateKargo(int barkod, String newName) async {
-    final db = await database;
-    await db.update(
-      'kargo',
-      {'name': newName},
-      where: 'barkod = ?',
-      whereArgs: [barkod],
-    );
   }
 
   // Delete an item

@@ -29,7 +29,7 @@ class _AracEkleState extends State<AracEkle> {
 
     // If input is valid, clear the error message and proceed
     setState(() {
-      DatabaseHelper().insertItem(_plakaController.text);
+      DatabaseHelper().insertItemD(_plakaController.text);
       _errorMessage = null;
     });
 

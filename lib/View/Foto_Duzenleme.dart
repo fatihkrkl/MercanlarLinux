@@ -18,7 +18,6 @@ class FotoDuzen extends StatelessWidget{
     }
     Navigator.pop(context);
     Navigator.pop(context);
-    Navigator.pop(context);
   }
 
   Future<XFile> cropSquareImage(XFile imageFile) async {
