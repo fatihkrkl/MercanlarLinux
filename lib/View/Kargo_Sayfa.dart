@@ -1,72 +1,354 @@
-import 'package:mercanlarlinux/View/Kargo_Bilgi.dart';
 import 'package:flutter/material.dart';
+import 'package:mercanlarlinux/View/Barkod_Sayfa.dart';
+import 'package:mercanlarlinux/View/Kargo_Bilgi.dart';
 import 'package:mercanlarlinux/View/Kargo_Ekle.dart';
-class KargoSayfa extends StatelessWidget{
-  final List<String> items = List.generate(20, (index) => 'Item ${index + 1}');
+import '../Model/DatabaseHelper.dart';
+
+class KargoSayfa extends StatefulWidget {
+
+  final String plaka;
+  KargoSayfa({required this.plaka});
+
+  @override
+  _KargoSayfaState createState() => _KargoSayfaState();
+}
+
+class _KargoSayfaState extends State<KargoSayfa> {
+  int? _selectedIndex;
+  late Future<List<Map<String,dynamic>>> kargoItems; // Future for fetching kargo items
+
+  @override
+  void initState() {
+    super.initState();
+    kargoItems = DatabaseHelper().fetchKargo(widget.plaka); // Initialize the future
+  }
+
+  void refreshItems() {
+    setState(() {
+      kargoItems = DatabaseHelper().fetchKargo(widget.plaka); // Refresh kargo items
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Araç Sayfası'),
+        title: Text('Kargo Sayfası'),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => KargoEkle()),
-          );
-          // Action to be performed on button press
+        onPressed: () async {
+          print(await DatabaseHelper().fetchKargo(widget.plaka));
+          await DatabaseHelper().insertKargo("sdsaddsa",widget.plaka);
+          Navigator.push(context, MaterialPageRoute(builder: (context) => KargoEkle()));
+          print(widget.plaka);
+          setState(() {
+            kargoItems = DatabaseHelper().fetchKargo(widget.plaka);
+          });
         },
         child: Icon(Icons.add), // Plus icon
         tooltip: 'Add',
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Expanded(
-          child: ListView.builder(
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              return SizedBox(
-                height: 100,
-                child: Kargo(items[index],context),
-              );
-            },
-          )
-          ,
-        ),
+      body: FutureBuilder<List<Map<String,dynamic>>>(
+        future: kargoItems,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (snapshot.hasData) {
+            return ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return SizedBox(
+                  height: 100,
+                  child: Kargo(snapshot.data![index]['name'], context,index),
+                );
+              },
+            );
+          } else {
+            return const Center(child: Text('No data available'));
+          }
+        },
       ),
     );
   }
-  Widget Kargo(data,context){
-    return TextButton(
-        style: TextButton.styleFrom(
-          padding: EdgeInsets.symmetric(vertical: 20),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8), // Adjust border radius
-            side: BorderSide(
-              color: Colors.blue, // Set border color
-              width: 2, // Set border width
+
+  Widget Kargo(String data, BuildContext context,int index) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          _selectedIndex = index; // Update the selected index
+        });
+      },
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Container(
+          decoration: BoxDecoration(
+            color: _selectedIndex == index
+                ? Colors.blueAccent // Selected item background color
+                : Colors.white, // Default background color
+            border: Border.all(
+              color: _selectedIndex == index ? Colors.blue : Colors.grey,
+              width: 2,
             ),
           ),
+          child: Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(5),
+                child: Column(
+                  children: [
+                    Text(
+                      "Tip",
+                      style: TextStyle(
+                        color: _selectedIndex == index
+                            ? Colors.white // Selected item text color
+                            : Colors.black, // Default text color
+                        fontSize: 18,
+                      ),
+                    ),
+                    Text(
+                      data,
+                      style: TextStyle(
+                        color: _selectedIndex == index
+                            ? Colors.white // Selected item text color
+                            : Colors.black, // Default text color
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(5),
+                child: Column(
+                  children: [
+                    Text(
+                      "EvrakNo",
+                      style: TextStyle(
+                        color: _selectedIndex == index
+                            ? Colors.white // Selected item text color
+                            : Colors.black, // Default text color
+                        fontSize: 18,
+                      ),
+                    ),
+                    Text(
+                      data,
+                      style: TextStyle(
+                        color: _selectedIndex == index
+                            ? Colors.white // Selected item text color
+                            : Colors.black, // Default text color
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(5),
+                child: Column(
+                  children: [
+                    Text(
+                      "Tarih",
+                      style: TextStyle(
+                        color: _selectedIndex == index
+                            ? Colors.white // Selected item text color
+                            : Colors.black, // Default text color
+                        fontSize: 18,
+                      ),
+                    ),
+                    Text(
+                      data,
+                      style: TextStyle(
+                        color: _selectedIndex == index
+                            ? Colors.white // Selected item text color
+                            : Colors.black, // Default text color
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(5),
+                child: Column(
+                  children: [
+                    Text(
+                      "CariNo",
+                      style: TextStyle(
+                        color: _selectedIndex == index
+                            ? Colors.white // Selected item text color
+                            : Colors.black, // Default text color
+                        fontSize: 18,
+                      ),
+                    ),
+                    Text(
+                      data,
+                      style: TextStyle(
+                        color: _selectedIndex == index
+                            ? Colors.white // Selected item text color
+                            : Colors.black, // Default text color
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(5),
+                child: Column(
+                  children: [
+                    Text(
+                      "Unvan",
+                      style: TextStyle(
+                        color: _selectedIndex == index
+                            ? Colors.white // Selected item text color
+                            : Colors.black, // Default text color
+                        fontSize: 18,
+                      ),
+                    ),
+                    Text(
+                      data,
+                      style: TextStyle(
+                        color: _selectedIndex == index
+                            ? Colors.white // Selected item text color
+                            : Colors.black, // Default text color
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(5),
+                child: Column(
+                  children: [
+                    Text(
+                      "Resim",
+                      style: TextStyle(
+                        color: _selectedIndex == index
+                            ? Colors.white // Selected item text color
+                            : Colors.black, // Default text color
+                        fontSize: 18,
+                      ),
+                    ),
+                    Text(
+                      data,
+                      style: TextStyle(
+                        color: _selectedIndex == index
+                            ? Colors.white // Selected item text color
+                            : Colors.black, // Default text color
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(5),
+                child: Column(
+                  children: [
+                    Text(
+                      "İmza",
+                      style: TextStyle(
+                        color: _selectedIndex == index
+                            ? Colors.white // Selected item text color
+                            : Colors.black, // Default text color
+                        fontSize: 18,
+                      ),
+                    ),
+                    Text(
+                      data,
+                      style: TextStyle(
+                        color: _selectedIndex == index
+                            ? Colors.white // Selected item text color
+                            : Colors.black, // Default text color
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(5),
+                child: Column(
+                  children: [
+                    Text(
+                      "Teslim Tarihi",
+                      style: TextStyle(
+                        color: _selectedIndex == index
+                            ? Colors.white // Selected item text color
+                            : Colors.black, // Default text color
+                        fontSize: 18,
+                      ),
+                    ),
+                    Text(
+                      data,
+                      style: TextStyle(
+                        color: _selectedIndex == index
+                            ? Colors.white // Selected item text color
+                            : Colors.black, // Default text color
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(5),
+                child: Column(
+                  children: [
+                    Text(
+                      "Teslim Alan",
+                      style: TextStyle(
+                        color: _selectedIndex == index
+                            ? Colors.white // Selected item text color
+                            : Colors.black, // Default text color
+                        fontSize: 18,
+                      ),
+                    ),
+                    Text(
+                      data,
+                      style: TextStyle(
+                        color: _selectedIndex == index
+                            ? Colors.white // Selected item text color
+                            : Colors.black, // Default text color
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(5),
+                child: Column(
+                  children: [
+                    Text(
+                      "İşlem",
+                      style: TextStyle(
+                        color: _selectedIndex == index
+                            ? Colors.white // Selected item text color
+                            : Colors.black, // Default text color
+                        fontSize: 18,
+                      ),
+                    ),
+                    Text(
+                      data,
+                      style: TextStyle(
+                        color: _selectedIndex == index
+                            ? Colors.white // Selected item text color
+                            : Colors.black, // Default text color
+                        fontSize: 18,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+            ],
+          )
         ),
-        onPressed: () =>Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => KargoBilgi()),
-        ),
-        child: Row(
-          children: [
-            Expanded(child: Text("Tip")),
-            Expanded(child: Text("Evrak")),
-            Expanded(child: Text("Tarih")),
-            Expanded(child: Text("CariNo")),
-            Expanded(child: Text("Unvan")),
-            Expanded(child: Text("Resim")),
-            Expanded(child: Text("İmza")),
-            Expanded(child: Text("Teslim Tarihi")),
-            Expanded(child: Text("Teslim Alan")),
-            Expanded(child: Text("İşlem")),
-          ],
-        )
+      ),
     );
   }
 }

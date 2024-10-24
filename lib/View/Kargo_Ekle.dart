@@ -1,6 +1,7 @@
 import 'package:mercanlarlinux/View/Barkod_Sayfa.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mercanlarlinux/View/Imza_Sayfa.dart';
 
 class KargoEkle extends StatefulWidget {
   @override
@@ -20,7 +21,7 @@ class Combo_Bir_State extends State<KargoEkle> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("hehe"),
+          title: Text("Ekle"),
         ),
         body: Container(
           margin: EdgeInsets.all(30),
@@ -87,7 +88,7 @@ class Combo_Bir_State extends State<KargoEkle> {
                   )),
                   Expanded(child: IconButton(onPressed: ()=> Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => BarkodSayfa()),
+                    MaterialPageRoute(builder: (context) => ImzaSayfa(imza: true)),
                   ), icon: Icon(Icons.barcode_reader)))
                 ],
               )),

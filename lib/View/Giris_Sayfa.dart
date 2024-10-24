@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
-
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
 import 'Arac_Sayfa.dart';
 
-
+String? loggedMail;
 class GirisSayfa extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
 
   void _login(BuildContext context) {
     // Add login logic here
     String email = _emailController.text;
     String password = _passwordController.text;
-
+    loggedMail= email;
     print('Username: $email');
     print('Password: $password');
     if (email.isNotEmpty && password.isNotEmpty) {
