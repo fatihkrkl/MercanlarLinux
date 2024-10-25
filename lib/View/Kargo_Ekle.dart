@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mercanlarlinux/View/Imza_Sayfa.dart';
+import 'package:mercanlarlinux/View/Resim_Sayfa.dart';
 
 class KargoEkle extends StatefulWidget {
   @override
@@ -84,7 +84,7 @@ class Combo_Bir_State extends State<KargoEkle> {
                       child: TextField(
                     decoration: InputDecoration(hintText: "Barkod"),
                   )),
-                  Expanded(child: IconButton(onPressed: ()=> Navigator.push(context, MaterialPageRoute(builder: (context) => ImzaSayfa(imza: true)),),
+                  Expanded(child: IconButton(onPressed: ()=> Navigator.push(context, MaterialPageRoute(builder: (context) => ResimSayfa(imza: true)),),
                       icon: Icon(Icons.barcode_reader)))
                 ],
               )),

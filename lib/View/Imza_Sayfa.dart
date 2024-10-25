@@ -1,109 +1,59 @@
-import 'package:camera/camera.dart';
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
-import 'package:mercanlarlinux/View/Foto_Duzenleme.dart';
+import 'package:flutter_drawing_board/flutter_drawing_board.dart';
 
 class ImzaSayfa extends StatefulWidget {
-  bool imza;// 1 ise imza / 0 ise resim
-  ImzaSayfa({required this.imza});
-  CameraDescription firstCamera=const CameraDescription(
-  name: "name",
-  lensDirection: CameraLensDirection.back,
-  sensorOrientation: 10,
-  );
-
   @override
   _ImzaSayfaState createState() => _ImzaSayfaState();
 }
 
 class _ImzaSayfaState extends State<ImzaSayfa> {
-  late CameraController _controller;
-  late Future<void> _initializeControllerFuture;
+  final DrawingController _drawingController = DrawingController();
+  List<int> imza=Uint8List(80);
 
-  void initState() {
-    super.initState();
-    _controller = CameraController(
-      widget.firstCamera,
-      ResolutionPreset.medium
-    );
-    _initializeControllerFuture = _controller.initialize();
+
+  Future<List<int>> _getImageData() async {
+    print("object");
+    imza = await (await _drawingController.getImageData())?.buffer.asInt8List() as List<int>;
+    setState(() {
+
+    });
+    return (await _drawingController.getImageData())?.buffer.asInt8List() as List<int>;
+  }
+
+  bool isImzaEmpty() {
+    return imza.isEmpty || imza.every((element) => element == 0);
   }
 
   @override
   Widget build(BuildContext context) {
+    print(imza);
     return Scaffold(
       appBar: AppBar(
-        title: Text("İmza Kayıt"),
+        title: Text('Drawing App'),
       ),
       body: Column(
         children: [
-          Padding(
-            padding: EdgeInsets.all(20),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                // Calculate the size for the square container (based on the smallest constraint)
-                double size = constraints.maxWidth < constraints.maxHeight
-                    ? constraints.maxWidth
-                    : constraints.maxHeight;
-
-                return Container(
-                  width: size, // Square size
-                  height: size, // Square size
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.blue, // Border color
-                      width: 2, // Border width
-                    ),
-                    borderRadius: BorderRadius.circular(8), // Optional: Rounded corners
-                  ),
-                  child: FutureBuilder<void>(
-                    future: _initializeControllerFuture,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        return AspectRatio(
-                          aspectRatio: 1 / 0.7,
-                          child: ClipRect(
-                            child: Transform.scale(
-                              scale: _controller.value.aspectRatio / 0.7,
-                              child: Center(
-                                child: CameraPreview(_controller),
-                              ),
-                            ),
-                          ),
-                        );
-                      } else {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                    },
-                  ),
-                );
-              },
+          Container(
+            width: 300,
+            height: 300,
+            child: DrawingBoard(
+              controller: _drawingController,
+              background: Container(width: 400, height: 400, color: Colors.white),
             ),
           ),
-          Expanded(
-            flex: 1,
-            child: ElevatedButton(
-              onPressed: () async {
-                try {
-                  await _initializeControllerFuture;
-                  final image = await _controller.takePicture();
-                  if (!context.mounted) return;
-                  await Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => FotoDuzen(
-                        imza: widget.imza,
-                        photo: image,
-                      ),
-                    ),
-                  );
-                } catch (e) {
-                  print("dsıuagdhsahdsjakd");
-                }
-              },
-              child: Text("Deklanşör"),
-            ),
+          ElevatedButton(onPressed: _getImageData, child: Text("Kaydet")),
+          isImzaEmpty()
+              ? CircularProgressIndicator() // Show loading indicator if imza is empty
+              : Image.memory(
+            Uint8List.fromList(imza), // Display the image if imza has data
+            fit: BoxFit.cover,
           ),
         ],
-      ),
+      )
     );
   }
 }
+

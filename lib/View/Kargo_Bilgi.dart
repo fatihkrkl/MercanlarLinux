@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:mercanlarlinux/View/Imza_Sayfa.dart';
+import 'package:mercanlarlinux/View/Resim_Sayfa.dart';
 import 'package:mercanlarlinux/View/Foto_Sayfa.dart';
 
 class KargoBilgi extends StatefulWidget {
@@ -132,7 +132,7 @@ class _KargoBilgiState extends State<KargoBilgi> {
                                   // Navigate to FotoSayfa if the path is empty
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => ImzaSayfa( imza: false)),
+                                    MaterialPageRoute(builder: (context) => ResimSayfa( imza: false)),
                                   ).then((val) {
                                     setState(() {
                                       // Handle any state changes after returning from FotoSayfa
@@ -188,7 +188,7 @@ class _KargoBilgiState extends State<KargoBilgi> {
                                   // Navigate to FotoSayfa if the path is empty
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => ImzaSayfa( imza: true)),
+                                    MaterialPageRoute(builder: (context) => ResimSayfa( imza: true)),
                                   ).then((val) {
                                     setState(() {
                                       // Handle any state changes after returning from FotoSayfa

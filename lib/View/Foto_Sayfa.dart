@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mercanlarlinux/View/Imza_Sayfa.dart';
+import 'package:mercanlarlinux/View/Resim_Sayfa.dart';
 
 class FotoSayfa extends StatelessWidget{
   bool imza;
@@ -22,7 +22,7 @@ class FotoSayfa extends StatelessWidget{
           ),
           Row(
             children: [
-              ElevatedButton(onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => ImzaSayfa(imza: imza))), child: Text("Değiştir"))
+              ElevatedButton(onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => ResimSayfa(imza: imza))), child: Text("Değiştir"))
             ],
           )
         ],

@@ -124,11 +124,12 @@ class DatabaseHelper {
   }
   Future<List<Map<String, dynamic>>> fetchKargo(String plaka) async {
     final db = await database;
-    return await db.query('kargo',where: 'plaka = ?', whereArgs: [plaka],);
+    return await db.query('kargo',where: 'plaka = ?', whereArgs: [plaka]);
   }
 
   // Delete an item
   Future<void> deleteItem(String plaka) async {
+
     final db = await database;
     await db.delete(
       'items',
@@ -138,6 +139,7 @@ class DatabaseHelper {
   }
 
   Future<void> deleteKargo(int barkod) async {
+    print("deleted $barkod");
     final db = await database;
     await db.delete(
       'kargo',
