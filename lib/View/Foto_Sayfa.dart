@@ -22,7 +22,7 @@ class FotoSayfa extends StatelessWidget{
           ),
           Row(
             children: [
-              ElevatedButton(onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => ResimSayfa(imza: imza))), child: Text("Değiştir"))
+              ElevatedButton(onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => ResimSayfa())), child: Text("Değiştir"))
             ],
           )
         ],

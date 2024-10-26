@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mercanlarlinux/View/Foto_Duzenleme.dart';
 
 class ResimSayfa extends StatefulWidget {
-  bool imza;// 1 ise imza / 0 ise resim
-  ResimSayfa({required this.imza});
+  ResimSayfa();
   CameraDescription firstCamera=const CameraDescription(
   name: "name",
   lensDirection: CameraLensDirection.back,
@@ -90,7 +89,6 @@ class _ResimSayfaState extends State<ResimSayfa> {
                   await Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => FotoDuzen(
-                        imza: widget.imza,
                         photo: image,
                       ),
                     ),

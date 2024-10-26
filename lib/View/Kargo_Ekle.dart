@@ -84,7 +84,7 @@ class Combo_Bir_State extends State<KargoEkle> {
                       child: TextField(
                     decoration: InputDecoration(hintText: "Barkod"),
                   )),
-                  Expanded(child: IconButton(onPressed: ()=> Navigator.push(context, MaterialPageRoute(builder: (context) => ResimSayfa(imza: true)),),
+                  Expanded(child: IconButton(onPressed: ()=> Navigator.push(context, MaterialPageRoute(builder: (context) => ResimSayfa()),),
                       icon: Icon(Icons.barcode_reader)))
                 ],
               )),

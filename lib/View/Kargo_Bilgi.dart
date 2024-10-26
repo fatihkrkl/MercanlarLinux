@@ -132,7 +132,7 @@ class _KargoBilgiState extends State<KargoBilgi> {
                                   // Navigate to FotoSayfa if the path is empty
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => ResimSayfa( imza: false)),
+                                    MaterialPageRoute(builder: (context) => ResimSayfa()),
                                   ).then((val) {
                                     setState(() {
                                       // Handle any state changes after returning from FotoSayfa
@@ -188,7 +188,7 @@ class _KargoBilgiState extends State<KargoBilgi> {
                                   // Navigate to FotoSayfa if the path is empty
                                   Navigator.push(
                                     context,
-                                    MaterialPageRoute(builder: (context) => ResimSayfa( imza: true)),
+                                    MaterialPageRoute(builder: (context) => ResimSayfa()),
                                   ).then((val) {
                                     setState(() {
                                       // Handle any state changes after returning from FotoSayfa

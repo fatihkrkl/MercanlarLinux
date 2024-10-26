@@ -14,6 +14,8 @@ class AracSayfa extends StatefulWidget {
 class _AracSayfaState extends State<AracSayfa> {
   Future<List<Map<String, dynamic>>> items=DatabaseHelper().fetchItems();
 
+
+
   void removeItem(String plaka) async {
     print(await DatabaseHelper().fetchItems());
     try {
@@ -27,7 +29,7 @@ class _AracSayfaState extends State<AracSayfa> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Hata"),
+            title: const Text("Hata"),
             content: Text(ex.toString()),
             actions: [
               TextButton(
@@ -70,7 +72,7 @@ class _AracSayfaState extends State<AracSayfa> {
                     });
                     print('Button 1 Pressed');
                   },
-                  child: Text('Yeni'),
+                  child: const Text('Yeni'),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -90,7 +92,7 @@ class _AracSayfaState extends State<AracSayfa> {
             ),
             SizedBox(height: 16),
             Expanded(
-              child: FutureBuilder(future: DatabaseHelper().fetchItems(), builder: (context,snapshot){
+              child: FutureBuilder(future: items, builder: (context,snapshot){
                 if (snapshot.connectionState ==
                     ConnectionState.waiting) {
                   return const Center(

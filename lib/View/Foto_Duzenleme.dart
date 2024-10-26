@@ -6,16 +6,11 @@ import 'package:camera/camera.dart';
 import 'package:mercanlarlinux/View/Kargo_Bilgi.dart';
 
 class FotoDuzen extends StatelessWidget{
-  bool imza;// 1 ise imza / 0 ise resim
   XFile photo;
-  FotoDuzen({required this.imza,required this.photo});
+  FotoDuzen({required this.photo});
 
   void buttonAction(BuildContext context){
-    if(imza){
-      KargoBilgi.imzapath=photo.path;
-    }else{
-      KargoBilgi.resimpath=photo.path;
-    }
+    KargoBilgi.resimpath=photo.path;
     Navigator.pop(context);
     Navigator.pop(context);
   }

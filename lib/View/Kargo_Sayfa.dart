@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mercanlarlinux/View/Resim_Sayfa.dart';
 import '../Model/DatabaseHelper.dart';
 import 'Imza_Sayfa.dart';
 
@@ -60,6 +61,10 @@ class _KargoSayfaState extends State<KargoSayfa> {
 
   void Imza(BuildContext context) {
     selectedIndex != null ? Navigator.push(context, MaterialPageRoute(builder: (context) => ImzaSayfa())): ();
+  }
+
+  void Resim(BuildContext context) {
+    selectedIndex != null ? Navigator.push(context, MaterialPageRoute(builder: (context) => ResimSayfa())): ();
   }
 
   @override
@@ -149,7 +154,7 @@ class _KargoSayfaState extends State<KargoSayfa> {
                     0.5, // Set opacity to make it transparent
                     child: Row(
                       children: [
-                        buton("Kaynak", Colors.purple, Deneme, context),
+                        buton("Resim", Colors.purple, Resim, context),
                         buton("İmza", Colors.yellow, Imza, context),
                         SilButonu("Sil", Colors.red, Sil, selectedBarcode!),
 
@@ -158,7 +163,7 @@ class _KargoSayfaState extends State<KargoSayfa> {
                   )
                       : Row(
                     children: [
-                      buton("Kaynak", Colors.purple, Deneme, context),
+                      buton("Kaynak", Colors.purple, Resim, context),
                       buton("İmza", Colors.yellow, Imza, context),
                       SilButonu("Sil", Colors.red, Sil, selectedBarcode!),
 
