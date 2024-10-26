@@ -1,11 +1,13 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'dart:async';
+import 'package:uuid/uuid.dart';
+
 
 class DatabaseHelper {
   // Create a singleton instance
   static final DatabaseHelper _instance = DatabaseHelper._privateConstructor();
-
+  var uuid = const Uuid();
   factory DatabaseHelper() {
     return _instance;
   }
@@ -31,7 +33,7 @@ class DatabaseHelper {
       version: 1,
       onCreate: (db, version) async {
         await db.execute(
-          'CREATE TABLE items(plaka TEXT PRIMARY KEY, sofor TEXT, per TEXT, sube TEXT)',
+          'CREATE TABLE items(id TEXT PRIMARY KEY, plaka TEXT , sofor TEXT, per TEXT, sube TEXT)',
         );
         await db.execute(
           'CREATE TABLE kargo(barkod INTEGER PRIMARY KEY, plaka TEXT, tip TEXT, evrakno TEXT, tarih TEXT, carino TEXT, unvan TEXT, resim TEXT, imza TEXT, teslimtarih TEXT, teslimalan TEXT, islem TEXT)',
@@ -42,12 +44,16 @@ class DatabaseHelper {
 
   Future<void> insertItemD(String plaka) async {
     final db = await database;
+
+    String newId = uuid.v4();
     await db.insert(
       'items',
-      {'plaka': plaka,
-        'sofor': "sofor",
-        'per': "per",
-        'sube': "sube"},
+      {
+        'id':newId,
+        'plaka': plaka,
+        'sofor': "sofor12",
+        'per': "per1",
+        'sube': "sube12"},
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
