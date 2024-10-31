@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mercanlarlinux/View/Foto_Sayfa.dart';
 import 'package:mercanlarlinux/View/Kargo_Ekle.dart';
 import 'package:mercanlarlinux/View/Kargo_Sayfa.dart';
-import 'package:mercanlarlinux/View/Resim_Sayfa.dart';
 
 import '../Model/DatabaseHelper.dart';
 

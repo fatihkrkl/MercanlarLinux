@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mercanlarlinux/Model/DatabaseHelper.dart';
-import 'package:mercanlarlinux/View/Resim_Sayfa.dart';
 
 class KargoEkle extends StatefulWidget {
-  String id;
-  KargoEkle({super.key, required this.id});
+  final String id;
+  const KargoEkle({super.key, required this.id});
   @override
   ComboState createState() => ComboState();
 }

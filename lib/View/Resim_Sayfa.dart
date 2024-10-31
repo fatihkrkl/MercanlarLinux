@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:mercanlarlinux/View/Foto_Duzenleme.dart';
 
 class ResimSayfa extends StatefulWidget {
-  ResimSayfa();
   CameraDescription firstCamera=const CameraDescription(
   name: "name",
   lensDirection: CameraLensDirection.back,

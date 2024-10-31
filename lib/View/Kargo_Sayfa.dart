@@ -266,11 +266,11 @@ class Satir extends StatelessWidget {
 }
 
 class Blok extends StatelessWidget {
-  double width;
-  String name;
-  bool isSelected;
+  final double width;
+  final String name;
+  final bool isSelected;
 
-  Blok({
+  const Blok({
     required this.name,
     required this.width,
     required this.isSelected,

@@ -5,8 +5,8 @@ import 'package:image/image.dart' as img;
 import 'package:camera/camera.dart';
 
 class FotoDuzen extends StatelessWidget{
-  XFile photo;
-  FotoDuzen({required this.photo});
+  final XFile photo;
+  const FotoDuzen({required this.photo});
 
   void buttonAction(BuildContext context){
     //foto kaydetme şeyşeysi
@@ -47,9 +47,9 @@ class FotoDuzen extends StatelessWidget{
     // Write the cropped image to the file
     final File croppedFile = File(path);
     await croppedFile.writeAsBytes(croppedBytes);
-    photo=XFile(croppedFile.path);
+    XFile foto=XFile(croppedFile.path);
     // Create and return an XFile from the cropped file
-    return photo;
+    return foto;
   }
 
 
