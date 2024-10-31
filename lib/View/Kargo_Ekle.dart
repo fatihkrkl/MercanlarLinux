@@ -1,18 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:mercanlarlinux/Model/DatabaseHelper.dart';
 import 'package:mercanlarlinux/View/Resim_Sayfa.dart';
 
 class KargoEkle extends StatefulWidget {
+  String id;
+  KargoEkle({super.key, required this.id});
   @override
-  Combo_Bir_State createState() => Combo_Bir_State();
+  ComboState createState() => ComboState();
 }
 
-class Combo_Bir_State extends State<KargoEkle> {
-  int selectedValue = 0;
-  final List<String> options = [
-    'Option 1',
-    'Option 2',
-    'Option 3',
-    'Option 4',
+class ComboState extends State<KargoEkle> {
+  TextEditingController barkodController= TextEditingController();
+  String? selectedSofor;
+  String? selectedPer;
+  String? selectedSube;
+  final List<String> soforler = [
+    'Şoför 1',
+    'Şoför 2',
+    'Şoför 3',
+    'Şoför 4',
+  ];
+  final List<String> perler = [
+    'Personel 1',
+    'Personel 2',
+    'Personel 3',
+    'Personel 4',
+  ];
+  final List<String> subeler = [
+    'Şube 1',
+    'Şube 2',
+    'Şube 3',
+    'Şube 4',
   ];
 
   @override
@@ -27,130 +45,110 @@ class Combo_Bir_State extends State<KargoEkle> {
             children: [
               Expanded(
                   child: Row(
-                children: [
-                  Expanded(flex: 1,child: Text("Araç")),
-                  Expanded(
-                    flex: 2,
-                    child: DropdownButton<String>(
-                      hint: Text("Select"),
-                      items:
-                          options.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          var selectedValue = newValue;
-                          print(selectedValue);
-                        });
-                      },
-                    ),
-                  )
-                ],
-              )),
-              Expanded(
-                  child: Row(
-                children: [
-                  Expanded(flex: 1,child: Text("Araç")),
-                  Expanded(
-                    flex: 2,
-                    child: DropdownButton<String>(
-                      hint: Text("Select"),
-                      items:
-                          options.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          var selectedValue = newValue;
-                          print(selectedValue);
-
-                        });
-                      },
-                    ),
-                  )
-                ],
-              )),
-              Expanded(
-                  child: Row(
-                children: [
-                  Expanded(child: Text("Araç")),
-                  Expanded(
-                      child: TextField(
-                    decoration: InputDecoration(hintText: "Barkod"),
+                    children: [
+                      Expanded(flex: 1,child: Text("Şoför")),
+                      Expanded(
+                        flex: 2,
+                        child: DropdownButton<String>(
+                          hint: Text("Select"),
+                          value: selectedSofor,
+                          items:
+                          soforler.map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectedSofor = newValue;
+                            });
+                          },
+                        ),
+                      )
+                    ],
                   )),
-                  Expanded(child: IconButton(onPressed: ()=> Navigator.push(context, MaterialPageRoute(builder: (context) => ResimSayfa()),),
-                      icon: Icon(Icons.barcode_reader)))
-                ],
-              )),
-              const Expanded(
-                  child: Row(
-                children: [
-                  Expanded(flex: 1,child: Text("Araç")),
-                  Expanded(
-                      flex: 2,
-                      child: TextField(
-                    decoration: InputDecoration(hintText: "Tarih"),
-                  ))
-                ],
-              )),
               Expanded(
                   child: Row(
-                children: [
-                  Expanded(flex: 1,child: Text("Araç")),
-                  Expanded(
-                    flex: 2,
-                    child: DropdownButton<String>(
-                      hint: Text("Select"),
-                      items:
-                          options.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          var selectedValue = newValue;
-                        });
-                      },
-                    ),
-                  )
-                ],
-              )),
+                    children: [
+                      Expanded(child: Text("Barkod")),
+                      Expanded(
+                          child: TextField(
+                            controller: barkodController,
+                            decoration: InputDecoration(hintText: "Barkod"),
+                          )),
+                      Expanded(child: IconButton(onPressed: ()=> (/* Terminal barkod okuyucu çalıştır */),
+                          icon: Icon(Icons.barcode_reader)))
+                    ],
+                  )),
               Expanded(
                   child: Row(
-                children: [
-                  Expanded(flex: 1,child: Text("Araç")),
-                  Expanded(
-                    flex: 2,
-                    child: DropdownButton<String>(
-                      hint: Text("Select"),
-                      items:
-                          options.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          var selectedValue = newValue;
-                          print(selectedValue);
+                    children: [
+                      Expanded(flex: 1,child: Text("Personel")),
+                      Expanded(
+                        flex: 2,
+                        child: DropdownButton<String>(
+                          hint: Text("Select"),
+                          value: selectedPer,
+                          items:
+                          perler.map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectedPer = newValue;
+                            });
+                          },
+                        ),
+                      )
+                    ],
+                  )),
+              Expanded(
+                  child: Row(
+                    children: [
+                      Expanded(flex: 1,child: Text("Şube")),
+                      Expanded(
+                        flex: 2,
+                        child: DropdownButton<String>(
+                          hint: Text("Select"),
+                          value: selectedSube,
+                          items:
+                          subeler.map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectedSube = newValue;
 
-                        });
+                            });
+                          },
+                        ),
+                      )
+                    ],
+                  )),
+              Card(
+                child: Expanded(
+                  child: TextButton(
+                      onPressed: () async {
+                        await DatabaseHelper().insertKargoD(barkodController.text, widget.id);
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => KargoEkle(id: widget.id),
+                          ),
+                        );
+
                       },
-                    ),
-                  )
-                ],
-              )),
-              Expanded(child: ElevatedButton(onPressed: ()=>
-              Navigator.pop(context), child: Text("Kaydet")))
+                      child: Text("Kaydet")),
+                ),
+              )
             ],
           ),
         ));

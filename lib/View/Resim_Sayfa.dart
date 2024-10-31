@@ -31,7 +31,7 @@ class _ResimSayfaState extends State<ResimSayfa> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("İmza Kayıt"),
+        title: Text("Fotoğraf Sayfa"),
       ),
       body: Column(
         children: [
@@ -78,9 +78,9 @@ class _ResimSayfaState extends State<ResimSayfa> {
               },
             ),
           ),
-          Expanded(
-            flex: 1,
-            child: ElevatedButton(
+          Expanded(child: Container()),
+          Card(
+            child: TextButton(
               onPressed: () async {
                 try {
                   await _initializeControllerFuture;
@@ -94,7 +94,6 @@ class _ResimSayfaState extends State<ResimSayfa> {
                     ),
                   );
                 } catch (e) {
-                  print("dsıuagdhsahdsjakd");
                 }
               },
               child: Text("Deklanşör"),

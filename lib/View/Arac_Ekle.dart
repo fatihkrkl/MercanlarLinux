@@ -1,101 +1,94 @@
-import 'package:mercanlarlinux/Model/AracModel.dart';
-import 'package:mercanlarlinux/View/Arac_Sayfa.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';  // For decoding JSON data
-import 'package:http/http.dart' as http;
-import 'package:sqflite/sqflite.dart';
+import 'package:mercanlarlinux/View/Foto_Sayfa.dart';
+import 'package:mercanlarlinux/View/Kargo_Ekle.dart';
+import 'package:mercanlarlinux/View/Kargo_Sayfa.dart';
+import 'package:mercanlarlinux/View/Resim_Sayfa.dart';
 
 import '../Model/DatabaseHelper.dart';
 
-
 class AracEkle extends StatefulWidget {
+
+  AracEkle({super.key});
+
   @override
-  _AracEkleState createState() => _AracEkleState();
+  Combo_Iki_State createState() => Combo_Iki_State();
 }
 
-class _AracEkleState extends State<AracEkle> {
-  final TextEditingController _plakaController = TextEditingController();
-  String? _errorMessage; // To store the error message
-
-  Future<void> buttonAction(BuildContext context) async {
-    // Check if the input is empty
-    if (_plakaController.text.isEmpty) {
-      setState(() {
-        _errorMessage = 'Lütfen plaka giriniz'; // Set error message
-      });
-      return; // Exit the function if input is empty
-    }
-
-    // If input is valid, clear the error message and proceed
-    setState(() {
-      DatabaseHelper().insertItemD(_plakaController.text);
-      _errorMessage = null;
-    });
-
-    // Proceed with the database insertion
-
-    Navigator.pop(context);
-  }
+class Combo_Iki_State extends State<AracEkle> {
+  String? selectedValue ;
+  final List<String> options = [
+    'Option 1',
+    'Option 2',
+    'Option 3',
+    'Option 4',
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Araç Ekle"),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start, // Align to the start of the column
-          children: [
-            TextField(
-              controller: _plakaController,
-              decoration: InputDecoration(
-                labelText: 'Plaka', // Optional label
-                errorText: _errorMessage, // This will show the error below the TextField
-              ),
-            ),
-            SizedBox(height: 10), // Add some spacing
-            ElevatedButton(
-              onPressed: () => buttonAction(context),
-              child: Text("Araç Ekle"),
-            ),
-          ],
+        appBar: AppBar(
+          title: Text("Ekle"),
         ),
-      ),
-    );
+        body: Container(
+          margin: EdgeInsets.all(30),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(flex: 1, child: Text("Araç")),
+                  Expanded(
+                    flex: 2,
+                    child: DropdownButton<String>(
+                      hint: Text("Select"),
+                      value: selectedValue, // Displays the last selected value
+                      items: options.map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedValue = newValue;
+                          print("Selected: $selectedValue");
+                        });
+                      },
+                    )
+
+                  )
+                ],
+              ),
+              Expanded(child: Container()),
+              ElevatedButton(
+                onPressed: selectedValue == null
+                    ? null // Disables the button when selectedValue is null
+                    : () async {
+                  Navigator.pop(context);
+                  String id = await DatabaseHelper().insertItemD();
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => KargoEkle(id: id),
+                    ),
+                  );
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => KargoSayfa(id: id, plaka: selectedValue!,),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: selectedValue == null ? Colors.transparent : Colors.blue,
+                  foregroundColor: selectedValue == null ? Colors.grey : Colors.white,
+                  shadowColor: selectedValue == null ? Colors.transparent : null,
+                ),
+                child: Text("Kaydet"),
+              )
+
+            ],
+          ),
+        ));
   }
-
-
-
-
-
-/*final String apiUrl = "http://10.0.2.2:5273/Arac_";
-  // Method to fetch posts
-  void fetchPosts() async {
-    final response = await http.get(Uri.parse(apiUrl));
-    print(await jsonDecode(response.body));
-  }
-
-  // Method to create a new post
-  Future<void> createPost(dynamic body) async {
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'title': "sda",
-        'body': body,
-        'userId': 1,
-      }),
-    );
-
-    if (response.statusCode == 201) {
-      print('Post created successfully  :$response');
-    } else {
-      throw Exception('Failed to create post');
-    }
-  }*/
 }
+

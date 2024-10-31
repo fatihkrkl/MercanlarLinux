@@ -29,7 +29,7 @@ class GirisSayfa extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: Text('Giriş'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -39,7 +39,7 @@ class GirisSayfa extends StatelessWidget {
             TextField(
               controller: _emailController,
               decoration: InputDecoration(
-                labelText: 'Email',
+                labelText: 'Eposta',
                 border: OutlineInputBorder(),
               ),
               keyboardType: TextInputType.emailAddress,
@@ -48,7 +48,7 @@ class GirisSayfa extends StatelessWidget {
             TextField(
               controller: _passwordController,
               decoration: InputDecoration(
-                labelText: 'Password',
+                labelText: 'Şifre',
                 border: OutlineInputBorder(),
               ),
               obscureText: true,
@@ -56,7 +56,7 @@ class GirisSayfa extends StatelessWidget {
             SizedBox(height: 16),
             ElevatedButton(
               onPressed: () => _login(context),
-              child: Text('Login'),
+              child: Text('Giriş'),
             ),
           ],
         ),

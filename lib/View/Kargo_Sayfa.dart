@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:mercanlarlinux/View/Kargo_Ekle.dart';
 import 'package:mercanlarlinux/View/Resim_Sayfa.dart';
 import '../Model/DatabaseHelper.dart';
 import 'Imza_Sayfa.dart';
 
 class KargoSayfa extends StatefulWidget {
+  final String id;
   final String plaka;
 
-  KargoSayfa({required this.plaka});
+  KargoSayfa({required this.id,required this.plaka});
 
   @override
   _KargoSayfaState createState() => _KargoSayfaState();
@@ -15,17 +17,17 @@ class KargoSayfa extends StatefulWidget {
 class _KargoSayfaState extends State<KargoSayfa> {
   late Future<List<Map<String, dynamic>>> kargoItems;
   int? selectedIndex; // Track selected item index
-  int selectedBarcode = -1;
+  String selectedBarcode = "";
 
   @override
   void initState() {
-    kargoItems = DatabaseHelper().fetchKargo(widget.plaka);
+    kargoItems = DatabaseHelper().fetchKargo(widget.id);
     super.initState();
   }
 
   void refreshItems() {
     setState(() {
-      kargoItems = DatabaseHelper().fetchKargo(widget.plaka);
+      kargoItems = DatabaseHelper().fetchKargo(widget.id);
     });
   }
 
@@ -33,29 +35,21 @@ class _KargoSayfaState extends State<KargoSayfa> {
     print("dsadsa");
   }
 
-  void Ekle(int barkod) async {
-    await DatabaseHelper().insertKargo(
-        barkod,
-        widget.plaka,
-        "deneme",
-        "deneme",
-        "deneme",
-        "deneme",
-        "deneme",
-        "deneme",
-        "deneme",
-        "deneme",
-        "deneme",
-        "deneme");
-    setState(() {
-      refreshItems();
+  void Ekle(String barkod) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => KargoEkle(id: widget.id)),
+    ).then((val){
+      setState(() {
+        refreshItems();
+      });
     });
   }
 
-  void Sil(int barkod) async {
+  void Sil(String barkod) async {
     selectedIndex != null ? await DatabaseHelper().deleteKargo(barkod): ();
     selectedIndex=null;
-    selectedBarcode=-1;
+    selectedBarcode="";
     refreshItems();
   }
 
@@ -69,7 +63,6 @@ class _KargoSayfaState extends State<KargoSayfa> {
 
   @override
   Widget build(BuildContext context) {
-    print(selectedBarcode);
     print(selectedIndex);
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -95,7 +88,7 @@ class _KargoSayfaState extends State<KargoSayfa> {
                     islem: "islem"),
                 Container(
                   width: 1050,
-                  height: screenHeight - 210,
+                  height: screenHeight - 235,
                   child: FutureBuilder(
                     future: kargoItems,
                     builder: (context, snapshot) {
@@ -154,25 +147,23 @@ class _KargoSayfaState extends State<KargoSayfa> {
                     0.5, // Set opacity to make it transparent
                     child: Row(
                       children: [
-                        buton("Resim", Colors.purple, Resim, context),
+                        buton("Resim", Color.fromARGB(171, 27, 248, 75), Resim, context),
                         buton("İmza", Colors.yellow, Imza, context),
-                        SilButonu("Sil", Colors.red, Sil, selectedBarcode!),
-
+                        SilButonu("Sil", Colors.red, Sil, selectedBarcode),
                       ],
                     ),
                   )
                       : Row(
                     children: [
-                      buton("Kaynak", Colors.purple, Resim, context),
+                      buton("Resim", Color.fromARGB(171, 27, 248, 75), Resim, context),
                       buton("İmza", Colors.yellow, Imza, context),
-                      SilButonu("Sil", Colors.red, Sil, selectedBarcode!),
-
+                      SilButonu("Sil", Colors.red, Sil, selectedBarcode),
                     ],
                   ),
                 ),
                 Expanded(
                     child: Row(children: [
-                  EkleButonu("Ekle", Colors.blue, Ekle, 3998)
+                  EkleButonu("Ekle", Colors.blue, Ekle, "3998")
                 ])),
               ],
             ),
@@ -183,7 +174,7 @@ class _KargoSayfaState extends State<KargoSayfa> {
   }
 
   Widget EkleButonu(
-      String text, MaterialColor renk, Function(int) action, int barkod) {
+      String text, MaterialColor renk, Function(String) action, String barkod) {
     return Expanded(
       child: Card(
         color: renk,
@@ -196,20 +187,20 @@ class _KargoSayfaState extends State<KargoSayfa> {
   }
 
   Widget SilButonu(
-      String text, MaterialColor renk, Function(int) action, int barkod) {
+      String text, MaterialColor renk, Function(String) action, String barkod) {
     print(barkod);
     return Expanded(
       child: Card(
         color: renk,
         child: TextButton(
-          onPressed: action != null ? () => action!(barkod) : null,
+          onPressed:  () => action(barkod),
           child: Text(text),
         ),
       ),
     );
   }
 
-  Widget buton(String text, MaterialColor renk, Function(BuildContext) action,
+  Widget buton(String text, Color renk, Function(BuildContext) action,
       BuildContext context) {
     return Expanded(
       child: Card(
@@ -253,15 +244,12 @@ class Satir extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: isSelected ? Colors.lightBlueAccent : Colors.transparent,
+      color: isSelected ? const Color.fromARGB(200, 6, 7, 7) : const Color.fromARGB(
+          208, 26, 99, 214),
       // Highlight selected item
       child: Row(
         children: [
-          Blok(
-            name: tip,
-            width: 100,
-            isSelected: isSelected,
-          ),
+          Blok(name: tip, width: 100, isSelected: isSelected,),
           Blok(name: evrakno, width: 100, isSelected: isSelected),
           Blok(name: tarih, width: 100, isSelected: isSelected),
           Blok(name: carino, width: 100, isSelected: isSelected),
@@ -295,7 +283,8 @@ class Blok extends StatelessWidget {
         padding: const EdgeInsets.only(left: 5),
         child: Container(
           width: width,
-          color: isSelected ? Colors.yellow : Colors.blueGrey,
+          color: isSelected ? const Color.fromARGB(255, 47, 218, 185) : const Color.fromARGB(
+              34, 255, 255, 255),
           height: 30,
           child: Center(child: Text(name)),
         ));

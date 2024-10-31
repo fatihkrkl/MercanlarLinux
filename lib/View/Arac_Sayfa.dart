@@ -1,9 +1,8 @@
+import 'package:custom_date_range_picker/custom_date_range_picker.dart';
 import 'package:mercanlarlinux/Model/DatabaseHelper.dart';
 import 'package:mercanlarlinux/View/Kargo_Sayfa.dart';
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
 
-import '../Model/AracModel.dart';
 import 'Arac_Ekle.dart';
 
 class AracSayfa extends StatefulWidget {
@@ -13,8 +12,8 @@ class AracSayfa extends StatefulWidget {
 
 class _AracSayfaState extends State<AracSayfa> {
   Future<List<Map<String, dynamic>>> items = DatabaseHelper().fetchItems();
-  DateTime? filterStartDate = DateTime(1700);
-  DateTime? filterEndDate = DateTime(2100);
+  DateTime filterStartDate = DateTime.now().subtract(Duration(days: 1));
+  DateTime filterEndDate = DateTime.now();
   String? selectedPlaka;
   String? selectedSofor;
   String? selectedPer;
@@ -58,7 +57,7 @@ class _AracSayfaState extends State<AracSayfa> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Araç Sayfası'),
+        title: const Text('Araç Sayfası'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -69,9 +68,11 @@ class _AracSayfaState extends State<AracSayfa> {
               children: [
                 ElevatedButton(
                   onPressed: () async {
-                    final result = await Navigator.push(
+
+                    await Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => AracEkle()),
+                      MaterialPageRoute(
+                          builder: (context) => AracEkle()),
                     ).then((val) async {
                       setState(() {
                         items = DatabaseHelper().fetchItems();
@@ -86,7 +87,7 @@ class _AracSayfaState extends State<AracSayfa> {
                     // Action for Button 2
                     print('Button 2 Pressed');
                   },
-                  child: Text('Listele'),
+                  child: const Text('Listele'),
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -117,7 +118,7 @@ class _AracSayfaState extends State<AracSayfa> {
                                 elevation: 4,
                                 child: Center(
                                   child: Arac(
-                                      snapshot.data![index]['plaka'], context),
+                                      snapshot.data![index]['id'], snapshot.data![index]['id'], context),
                                 ),
                               ),
                             );
@@ -133,12 +134,15 @@ class _AracSayfaState extends State<AracSayfa> {
     );
   }
 
-  Widget Arac(String plaka, BuildContext context) {
+  Widget Arac(String plaka, String id, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
         children: [
-          Text(plaka, style: TextStyle(fontSize: 18)),
+          Text(
+            id.length > 9 ? '${id.substring(0, 9)}...' : id,
+            style: TextStyle(fontSize: 18),
+          ),
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -149,14 +153,15 @@ class _AracSayfaState extends State<AracSayfa> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => KargoSayfa(
-                                plaka: plaka,
+                                id: id,
+                            plaka: plaka,
                               )),
                     );
                   },
                   child: Text("Görüntüle"),
                 ),
                 ElevatedButton(
-                  onPressed: () => removeItem(plaka),
+                  onPressed: () => removeItem(id),
                   child: Text("Sil"),
                 ),
               ],
@@ -295,10 +300,12 @@ class _AracSayfaState extends State<AracSayfa> {
                 hintText: "Plaka",
                 menuStyle: MenuStyle(
                   shape: WidgetStatePropertyAll(
-                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)),
                   ),
                   alignment: Alignment.bottomLeft,
-                  surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
+                  surfaceTintColor:
+                      const WidgetStatePropertyAll(Colors.transparent),
                   backgroundColor: const WidgetStatePropertyAll(Colors.white),
                 ),
                 onSelected: (String? plaka) {
@@ -307,33 +314,36 @@ class _AracSayfaState extends State<AracSayfa> {
                 dropdownMenuEntries: veriler
                     .where((arac) => arac.containsKey("plaka"))
                     .fold<Map<String, Map<String, dynamic>>>(
-                  {},
+                      {},
                       (uniqueEntries, arac) {
-                    uniqueEntries[arac["plaka"]] = arac;
-                    return uniqueEntries;
-                  },
-                )
+                        uniqueEntries[arac["plaka"]] = arac;
+                        return uniqueEntries;
+                      },
+                    )
                     .values
                     .map((arac) {
-                  return DropdownMenuEntry<String>(
-                    leadingIcon: const Icon(
-                      Icons.groups_outlined,
-                      color: Color.fromARGB(255, 96, 71, 36),
-                    ),
-                    label: arac["plaka"],
-                    value: arac["plaka"],
-                    style: const ButtonStyle(
-                      overlayColor: WidgetStatePropertyAll(
-                        Color.fromARGB(255, 227, 185, 117),
-                      ),
-                      foregroundColor: WidgetStatePropertyAll(
-                        Color.fromARGB(255, 52, 52, 52),
-                      ),
-                    ),
-                  );
-                }).toList(),
+                      return DropdownMenuEntry<String>(
+                        leadingIcon: const Icon(
+                          Icons.groups_outlined,
+                          color: Color.fromARGB(255, 96, 71, 36),
+                        ),
+                        label: arac["plaka"],
+                        value: arac["plaka"],
+                        style: const ButtonStyle(
+                          overlayColor: WidgetStatePropertyAll(
+                            Color.fromARGB(255, 227, 185, 117),
+                          ),
+                          foregroundColor: WidgetStatePropertyAll(
+                            Color.fromARGB(255, 52, 52, 52),
+                          ),
+                        ),
+                      );
+                    })
+                    .toList(),
               ),
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
               DropdownMenu<String>(
                 controller: soforController,
                 width: 340,
@@ -367,10 +377,12 @@ class _AracSayfaState extends State<AracSayfa> {
                 hintText: "Şoför",
                 menuStyle: MenuStyle(
                   shape: WidgetStatePropertyAll(
-                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)),
                   ),
                   alignment: Alignment.bottomLeft,
-                  surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
+                  surfaceTintColor:
+                      const WidgetStatePropertyAll(Colors.transparent),
                   backgroundColor: const WidgetStatePropertyAll(Colors.white),
                 ),
                 onSelected: (String? sofor) {
@@ -379,33 +391,36 @@ class _AracSayfaState extends State<AracSayfa> {
                 dropdownMenuEntries: veriler
                     .where((arac) => arac.containsKey("sofor"))
                     .fold<Map<String, Map<String, dynamic>>>(
-                  {},
+                      {},
                       (uniqueEntries, arac) {
-                    uniqueEntries[arac["sofor"]] = arac;
-                    return uniqueEntries;
-                  },
-                )
+                        uniqueEntries[arac["sofor"]] = arac;
+                        return uniqueEntries;
+                      },
+                    )
                     .values
                     .map((arac) {
-                  return DropdownMenuEntry<String>(
-                    leadingIcon: const Icon(
-                      Icons.groups_outlined,
-                      color: Color.fromARGB(255, 96, 71, 36),
-                    ),
-                    label: arac["sofor"],
-                    value: arac["sofor"],
-                    style: const ButtonStyle(
-                      overlayColor: WidgetStatePropertyAll(
-                        Color.fromARGB(255, 227, 185, 117),
-                      ),
-                      foregroundColor: WidgetStatePropertyAll(
-                        Color.fromARGB(255, 52, 52, 52),
-                      ),
-                    ),
-                  );
-                }).toList(),
+                      return DropdownMenuEntry<String>(
+                        leadingIcon: const Icon(
+                          Icons.groups_outlined,
+                          color: Color.fromARGB(255, 96, 71, 36),
+                        ),
+                        label: arac["sofor"],
+                        value: arac["sofor"],
+                        style: const ButtonStyle(
+                          overlayColor: WidgetStatePropertyAll(
+                            Color.fromARGB(255, 227, 185, 117),
+                          ),
+                          foregroundColor: WidgetStatePropertyAll(
+                            Color.fromARGB(255, 52, 52, 52),
+                          ),
+                        ),
+                      );
+                    })
+                    .toList(),
               ),
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
               DropdownMenu<String>(
                 controller: perController,
                 width: 340,
@@ -439,10 +454,12 @@ class _AracSayfaState extends State<AracSayfa> {
                 hintText: "Personel",
                 menuStyle: MenuStyle(
                   shape: WidgetStatePropertyAll(
-                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)),
                   ),
                   alignment: Alignment.bottomLeft,
-                  surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
+                  surfaceTintColor:
+                      const WidgetStatePropertyAll(Colors.transparent),
                   backgroundColor: const WidgetStatePropertyAll(Colors.white),
                 ),
                 onSelected: (String? per) {
@@ -451,33 +468,36 @@ class _AracSayfaState extends State<AracSayfa> {
                 dropdownMenuEntries: veriler
                     .where((arac) => arac.containsKey("per"))
                     .fold<Map<String, Map<String, dynamic>>>(
-                  {},
+                      {},
                       (uniqueEntries, arac) {
-                    uniqueEntries[arac["per"]] = arac;
-                    return uniqueEntries;
-                  },
-                )
+                        uniqueEntries[arac["per"]] = arac;
+                        return uniqueEntries;
+                      },
+                    )
                     .values
                     .map((arac) {
-                  return DropdownMenuEntry<String>(
-                    leadingIcon: const Icon(
-                      Icons.groups_outlined,
-                      color: Color.fromARGB(255, 96, 71, 36),
-                    ),
-                    label: arac["per"],
-                    value: arac["per"],
-                    style: const ButtonStyle(
-                      overlayColor: WidgetStatePropertyAll(
-                        Color.fromARGB(255, 227, 185, 117),
-                      ),
-                      foregroundColor: WidgetStatePropertyAll(
-                        Color.fromARGB(255, 52, 52, 52),
-                      ),
-                    ),
-                  );
-                }).toList(),
+                      return DropdownMenuEntry<String>(
+                        leadingIcon: const Icon(
+                          Icons.groups_outlined,
+                          color: Color.fromARGB(255, 96, 71, 36),
+                        ),
+                        label: arac["per"],
+                        value: arac["per"],
+                        style: const ButtonStyle(
+                          overlayColor: WidgetStatePropertyAll(
+                            Color.fromARGB(255, 227, 185, 117),
+                          ),
+                          foregroundColor: WidgetStatePropertyAll(
+                            Color.fromARGB(255, 52, 52, 52),
+                          ),
+                        ),
+                      );
+                    })
+                    .toList(),
               ),
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
               DropdownMenu<String>(
                 controller: subeController,
                 width: 340,
@@ -511,10 +531,12 @@ class _AracSayfaState extends State<AracSayfa> {
                 hintText: "Şube",
                 menuStyle: MenuStyle(
                   shape: WidgetStatePropertyAll(
-                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                    RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)),
                   ),
                   alignment: Alignment.bottomLeft,
-                  surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
+                  surfaceTintColor:
+                      const WidgetStatePropertyAll(Colors.transparent),
                   backgroundColor: const WidgetStatePropertyAll(Colors.white),
                 ),
                 onSelected: (String? sube) {
@@ -523,31 +545,32 @@ class _AracSayfaState extends State<AracSayfa> {
                 dropdownMenuEntries: veriler
                     .where((arac) => arac.containsKey("sube"))
                     .fold<Map<String, Map<String, dynamic>>>(
-                  {},
+                      {},
                       (uniqueEntries, arac) {
-                    uniqueEntries[arac["sube"]] = arac;
-                    return uniqueEntries;
-                  },
-                )
+                        uniqueEntries[arac["sube"]] = arac;
+                        return uniqueEntries;
+                      },
+                    )
                     .values
                     .map((arac) {
-                  return DropdownMenuEntry<String>(
-                    leadingIcon: const Icon(
-                      Icons.groups_outlined,
-                      color: Color.fromARGB(255, 96, 71, 36),
-                    ),
-                    label: arac["sube"],
-                    value: arac["sube"],
-                    style: const ButtonStyle(
-                      overlayColor: WidgetStatePropertyAll(
-                        Color.fromARGB(255, 227, 185, 117),
-                      ),
-                      foregroundColor: WidgetStatePropertyAll(
-                        Color.fromARGB(255, 52, 52, 52),
-                      ),
-                    ),
-                  );
-                }).toList(),
+                      return DropdownMenuEntry<String>(
+                        leadingIcon: const Icon(
+                          Icons.groups_outlined,
+                          color: Color.fromARGB(255, 96, 71, 36),
+                        ),
+                        label: arac["sube"],
+                        value: arac["sube"],
+                        style: const ButtonStyle(
+                          overlayColor: WidgetStatePropertyAll(
+                            Color.fromARGB(255, 227, 185, 117),
+                          ),
+                          foregroundColor: WidgetStatePropertyAll(
+                            Color.fromARGB(255, 52, 52, 52),
+                          ),
+                        ),
+                      );
+                    })
+                    .toList(),
               ),
             ],
           );
@@ -570,45 +593,25 @@ class _AracSayfaState extends State<AracSayfa> {
       width: 340,
       child: ElevatedButton(
         onPressed: (() async {
-          showDialog(context: context, builder: (context)=>AlertDialog(
-            surfaceTintColor: Color.fromARGB(255, 221, 221, 221),
+          showCustomDateRangePicker(
+            context,
+            dismissible: true,
+            minimumDate: DateTime.now().subtract(const Duration(days: 30)),
+            maximumDate: DateTime.now().add(const Duration(days: 30)),
+            endDate: filterEndDate,
+            startDate: filterStartDate,
             backgroundColor: Colors.white,
-            shadowColor: Colors.black,
-            insetPadding: const EdgeInsets.symmetric(
-              horizontal: 5,
-            ),
-            actions: [
-              TextButton(
-                style: TextButton.styleFrom(
-                  overlayColor: Color.fromARGB(255, 227, 185, 0),
-                ),
-                onPressed: () {
-                  setState(() {});
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  "Uygula",
-                  style: TextStyle(
-                    color: Color.fromARGB(255, 96, 71, 36),
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ));
-          final dateRange = await showDateRangePicker(
-            context: context,
-            firstDate: DateTime(2000),
-            lastDate: DateTime.now(),
+            primaryColor: Color.fromARGB(255, 236, 203, 82),
+            onApplyClick: (start, end) {
+              setState(() {
+                filterEndDate = end;
+                filterStartDate = start;
+              });
+            },
+            onCancelClick: () {
+              setState(() {});
+            },
           );
-
-          if (dateRange != null) {
-            setState(() {
-              filterStartDate = dateRange.start;
-              filterEndDate = dateRange.end;
-            });
-          }
         }),
         style: ElevatedButton.styleFrom(
           overlayColor: Color.fromARGB(255, 227, 185, 117),

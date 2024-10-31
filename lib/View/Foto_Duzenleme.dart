@@ -3,14 +3,13 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 import 'package:camera/camera.dart';
-import 'package:mercanlarlinux/View/Kargo_Bilgi.dart';
 
 class FotoDuzen extends StatelessWidget{
   XFile photo;
   FotoDuzen({required this.photo});
 
   void buttonAction(BuildContext context){
-    KargoBilgi.resimpath=photo.path;
+    //foto kaydetme şeyşeysi
     Navigator.pop(context);
     Navigator.pop(context);
   }
@@ -73,8 +72,8 @@ class FotoDuzen extends StatelessWidget{
               }
             }),
           ),
-
-          ElevatedButton(onPressed: () => buttonAction(context), child: Text("Kaydet"))
+          Expanded(child: Container()),
+          Card(child: TextButton(onPressed: () => buttonAction(context), child: Text("Kaydet")))
         ],
       )
     );
