@@ -15,7 +15,7 @@ class ResimSayfa extends StatefulWidget {
 
 class _ResimSayfaState extends State<ResimSayfa> {
   late final CameraController _controller;
-  late Future<void> _initializeControllerFuture;
+  late final Future<void> _initializeControllerFuture;
 
   void initState() {
     super.initState();
