@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mercanlarlinux/View/Foto_Duzenleme.dart';
 
 class ResimSayfa extends StatefulWidget {
-  CameraDescription firstCamera=const CameraDescription(
+  final CameraDescription firstCamera=const CameraDescription(
   name: "name",
   lensDirection: CameraLensDirection.back,
   sensorOrientation: 10,
@@ -14,8 +14,8 @@ class ResimSayfa extends StatefulWidget {
 }
 
 class _ResimSayfaState extends State<ResimSayfa> {
-  late final CameraController _controller;
-  late final Future<void> _initializeControllerFuture;
+  late CameraController _controller;
+  late Future<void> _initializeControllerFuture;
 
   void initState() {
     super.initState();
