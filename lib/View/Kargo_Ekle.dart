@@ -132,22 +132,21 @@ class ComboState extends State<KargoEkle> {
                     ],
                   )),
               Card(
-                child: Expanded(
-                  child: TextButton(
-                      onPressed: () async {
-                        await DatabaseHelper().insertKargoD(barkodController.text, widget.id);
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => KargoEkle(id: widget.id),
-                          ),
-                        );
-
-                      },
-                      child: Text("Kaydet")),
+                child: TextButton(
+                  onPressed: () async {
+                    await DatabaseHelper().insertKargoD(barkodController.text, widget.id);
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => KargoEkle(id: widget.id),
+                      ),
+                    );
+                  },
+                  child: Text("Kaydet"),
                 ),
-              )
+              ),
+
             ],
           ),
         ));

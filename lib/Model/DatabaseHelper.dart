@@ -35,15 +35,17 @@ class DatabaseHelper {
       {'id': '4', 'plaka': '07JKL012', 'sofor': 'Ali Çelik', 'per': 'Fatih Kürklü', 'sube': 'Antalya'},
       {'id': '5', 'plaka': '41MNO345', 'sofor': 'Elif Yildiz', 'per': 'Fatih Kürklü', 'sube': 'Kocaeli'},
     ];
+    //  2024-10-31 11:26:02.224631
     return await openDatabase(
       path,
       version: 1,
       onCreate: (db, version) async {
         await db.execute(
-          'CREATE TABLE items(id TEXT PRIMARY KEY, plaka TEXT , sofor TEXT, per TEXT, sube TEXT)',
+          'CREATE TABLE items(id TEXT PRIMARY KEY, plaka TEXT , sofor TEXT, per TEXT, sube TEXT, tarih)',
         );
 
         for (var item in items) {
+          item['tarih']=DateTime.now().toString().split(" ")[0];
           await db.insert('items', item);
         }
         await db.execute(
@@ -64,7 +66,9 @@ class DatabaseHelper {
         'plaka': "dfsfdsf",
         'sofor': "sofor12",
         'per': "per1",
-        'sube': "sube12"},
+        'sube': "sube12",
+        'tarih':DateTime.now().toString().split(" ")[0]
+      },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
     return newId;
@@ -78,7 +82,9 @@ class DatabaseHelper {
       {'plaka': plaka,
         'sofor': sofor,
         'per': per,
-        'sube': sube},
+        'sube': sube,
+        'tarih':DateTime.now().toString().split(" ")[0]
+      },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -93,7 +99,7 @@ class DatabaseHelper {
           'id': id,
           'tip': "tip",
           'evrakno': "evrakno",
-          'tarih': "tarih",
+          'tarih': DateTime.now().toString().split(" ")[0],
           'carino': "carino",
           'unvan': "unvan",
           'resim': "resim",
@@ -109,7 +115,7 @@ class DatabaseHelper {
     }
   }
 
-  Future<void> insertKargo(String barkod,String id,String tip,String evrakno,String tarih,String carino,String unvan,String resim,String imza,String teslimtarih,String teslimalan,String islem) async {
+  Future<void> insertKargo(String barkod,String id,String tip,String evrakno,String carino,String unvan,String resim,String imza,String teslimtarih,String teslimalan,String islem) async {
     try {
       final db = await database;
       await db.insert(
@@ -119,7 +125,7 @@ class DatabaseHelper {
           'id': id,
           'tip': tip,
           'evrakno': evrakno,
-          'tarih': tarih,
+          'tarih': DateTime.now().toString().split(" ")[0],
           'carino': carino,
           'unvan': unvan,
           'resim': resim,

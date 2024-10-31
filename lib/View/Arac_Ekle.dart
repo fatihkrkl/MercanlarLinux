@@ -63,16 +63,17 @@ class Combo_Iki_State extends State<AracEkle> {
                     : () async {
                   Navigator.pop(context);
                   String id = await DatabaseHelper().insertItemD();
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => KargoEkle(id: id),
-                    ),
-                  );
-                  await Navigator.push(
+                  print("value: $selectedValue");
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => KargoSayfa(id: id, plaka: selectedValue!,),
+                    ),
+                  );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => KargoEkle(id: id),
                     ),
                   );
                 },
