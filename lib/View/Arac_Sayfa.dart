@@ -11,7 +11,7 @@ class AracSayfa extends StatefulWidget {
 }
 
 class _AracSayfaState extends State<AracSayfa> {
-  List<Map<String, dynamic>> items=[];
+  List<Map<String, dynamic>> items = [];
   List<Map<String, dynamic>> list = [];
   DateTime filterStartDate = DateTime.now().subtract(Duration(days: 1));
   DateTime filterEndDate = DateTime.now();
@@ -31,8 +31,8 @@ class _AracSayfaState extends State<AracSayfa> {
   }
 
   Future<void> fetchItems() async {
-    items=[];
-    (await DatabaseHelper().fetchItems()).forEach((item){
+    items = [];
+    (await DatabaseHelper().fetchItems()).forEach((item) {
       items.add(item);
     });
     applyFilter();
@@ -45,7 +45,6 @@ class _AracSayfaState extends State<AracSayfa> {
         DatabaseHelper().deleteItem(id);
         items.removeWhere((item) => item['id'] == id);
         applyFilter();
-
       });
     } catch (ex) {
       // You can handle the exception or show a dialog here
@@ -69,24 +68,44 @@ class _AracSayfaState extends State<AracSayfa> {
     }
   }
 
-  void applyFilter(){
+  void applyFilter() {
     list = [];
     items.forEach((item) {
-      int year=(int.parse((item['tarih'] as String).split("-")[0]));
-      int month=(int.parse((item['tarih'] as String).split("-")[1]));
-      int day=(int.parse((item['tarih'] as String).split("-")[2]));
-      DateTime date=DateTime(year,month,day);
-      if ((item['plaka'] == selectedPlaka ||
-          selectedPlaka == null) &&
-          (item['sofor'] == selectedSofor ||
-              selectedSofor == null) &&
-          (item['sube'] == selectedSube ||
-              selectedSube == null) &&
-          (item['per'] == selectedPer || selectedPer == null)&&
-          (!date.isAfter(filterEndDate) && !filterStartDate.isAfter(date))
-      ) {
+      int year = (int.parse((item['tarih'] as String).split("-")[0]));
+      int month = (int.parse((item['tarih'] as String).split("-")[1]));
+      int day = (int.parse((item['tarih'] as String).split("-")[2]));
+      DateTime date = DateTime(year, month, day);
+      if ((item['plaka'] == selectedPlaka || selectedPlaka == null) &&
+          (item['sofor'] == selectedSofor || selectedSofor == null) &&
+          (item['sube'] == selectedSube || selectedSube == null) &&
+          (item['per'] == selectedPer || selectedPer == null) &&
+          (!date.isAfter(filterEndDate) && !filterStartDate.isAfter(date))) {
         list.add(item);
       }
+    });
+  }
+
+  Future<void> _Ekle() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AracEkle()),
+    ).then((val) async {
+      fetchItems();
+    });
+  }
+  void _Listele(){
+    setState(() {
+      list = items;
+      filterStartDate = DateTime(2000);
+      filterEndDate = DateTime.now();
+      plakaController.clear();
+      subeController.clear();
+      soforController.clear();
+      perController.clear();
+      selectedSofor = null;
+      selectedPlaka = null;
+      selectedSube = null;
+      selectedPer = null;
     });
   }
 
@@ -103,41 +122,9 @@ class _AracSayfaState extends State<AracSayfa> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                ElevatedButton(
-                  onPressed: () async {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AracEkle()),
-                    ).then((val) async {
-                      fetchItems();
-                    });
-                  },
-                  child: const Text('Yeni'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      list=items;
-                      filterStartDate = DateTime(2000);
-                      filterEndDate = DateTime.now();
-                      plakaController.clear();
-                      subeController.clear();
-                      soforController.clear();
-                      perController.clear();
-                      selectedSofor=null;
-                      selectedPlaka = null;
-                      selectedSube=null;
-                      selectedPer=null;
-                    });
-                  },
-                  child: const Text('Listele'),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    showFilterDialog(context);
-                  },
-                  child: Text('Filtre'),
-                ),
+                Buton(context, "Ekle",_Ekle,Colors.blue,Colors.white),
+                Buton(context,"Listele",_Listele,Colors.lightBlueAccent,Colors.white),
+                Buton(context, "Filtrele", () =>showFilterDialog(context), Colors.yellow, Colors.white)
               ],
             ),
             SizedBox(height: 16),
@@ -163,36 +150,51 @@ class _AracSayfaState extends State<AracSayfa> {
     );
   }
 
+  Card Buton(BuildContext context,String text , VoidCallback action,Color bg, Color txt) {
+    return Card(
+      color: bg,
+      child: InkWell(
+        onTap: () async => action(),
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+          child: Text(
+            text,
+            style: TextStyle(
+              fontSize: 18,
+              color: txt, // Text color
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget Arac(String plaka, String id, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
         children: [
           Text(
-            id.length > 9 ? '${id.substring(0, 9)}...' : id,
-            style: TextStyle(fontSize: 18),
+            id.length > 9 ? 'Fiş\n#${id.substring(0, 9)}...' : 'Fiş\n#$id',
+            style: const TextStyle(fontSize: 18),
           ),
           Expanded(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => KargoSayfa(
-                                id: id,
-                                plaka: plaka,
-                              )),
-                    );
-                  },
-                  child: Text("Görüntüle"),
-                ),
-                ElevatedButton(
-                  onPressed: () => removeItem(id),
-                  child: Text("Sil"),
-                ),
+                Buton(context, "Görüntüle", () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => KargoSayfa(
+                          id: id,
+                          plaka: plaka,
+                        )),
+                  );
+                }, Colors.green, Colors.white),
+                Buton(context, "Sil", () => removeItem(id), Colors.red, Colors.white),
               ],
             ),
           ),

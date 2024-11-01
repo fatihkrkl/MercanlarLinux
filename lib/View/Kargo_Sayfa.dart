@@ -8,9 +8,8 @@ class KargoSayfa extends StatefulWidget {
   final String id;
   final String plaka;
   final bool nav;
-  const KargoSayfa({required this.id,required this.plaka,this.nav=false});
 
-
+  const KargoSayfa({required this.id, required this.plaka, this.nav = false});
 
   @override
   _KargoSayfaState createState() => _KargoSayfaState();
@@ -30,15 +29,17 @@ class _KargoSayfaState extends State<KargoSayfa> {
         Ekle();
       }
     });
-
   }
+
   @override
   void setState(VoidCallback fn) {
     super.setState(fn);
     kargoItems = DatabaseHelper().fetchKargo(widget.id);
   }
 
-  void static; refreshItems() {
+  void static;
+
+  refreshItems() {
     setState(() {
       kargoItems = DatabaseHelper().fetchKargo(widget.id);
     });
@@ -53,7 +54,8 @@ class _KargoSayfaState extends State<KargoSayfa> {
       context,
       MaterialPageRoute(builder: (context) => KargoEkle(id: widget.id)),
     );
-    if (result == true) { // Check if the result is true
+    if (result == true) {
+      // Check if the result is true
       setState(() {
         refreshItems(); // Refresh items if the result is true
         Ekle();
@@ -62,18 +64,24 @@ class _KargoSayfaState extends State<KargoSayfa> {
   }
 
   void Sil(String barkod) async {
-    selectedIndex != null ? await DatabaseHelper().deleteKargo(barkod): ();
-    selectedIndex=null;
-    selectedBarcode="";
+    selectedIndex != null ? await DatabaseHelper().deleteKargo(barkod) : ();
+    selectedIndex = null;
+    selectedBarcode = "";
     refreshItems();
   }
 
   void Imza(BuildContext context) {
-    selectedIndex != null ? Navigator.push(context, MaterialPageRoute(builder: (context) => ImzaSayfa())): ();
+    selectedIndex != null
+        ? Navigator.push(
+            context, MaterialPageRoute(builder: (context) => ImzaSayfa()))
+        : ();
   }
 
   void Resim(BuildContext context) {
-    selectedIndex != null ? Navigator.push(context, MaterialPageRoute(builder: (context) => ResimSayfa())): ();
+    selectedIndex != null
+        ? Navigator.push(
+            context, MaterialPageRoute(builder: (context) => ResimSayfa()))
+        : ();
   }
 
   @override
@@ -90,18 +98,21 @@ class _KargoSayfaState extends State<KargoSayfa> {
             child: Column(
               children: [
                 Satir(
-                    tip: "tip",
-                    evrakno: "evrakno",
-                    tarih: "tarih",
-                    carino: "carino",
-                    unvan: "unvan",
-                    resim: "resim",
-                    imza: "imza",
-                    teslimtarihi: "teslimtarihi",
-                    teslimalan: "teslimalan",
-                    islem: "islem"),
-                Container(
-                  width: 1050,
+                  tip: "Tip",
+                  evrakno: "Evrak No",
+                  tarih: "Tarih",
+                  carino: "Cari No",
+                  unvan: "Unvan",
+                  resim: "Resim",
+                  imza: "İmza",
+                  teslimtarihi: "Teslim Tarihi",
+                  teslimalan: "Teslim Alan",
+                  islem: "İşlem",
+                  anaArkaRenk: Color.fromARGB(255, 152, 152, 152),
+                  anaYaziRenk: Colors.white,
+                ),
+                SizedBox(
+                  width: 1000,
                   height: screenHeight - 235,
                   child: FutureBuilder(
                     future: kargoItems,
@@ -117,7 +128,6 @@ class _KargoSayfaState extends State<KargoSayfa> {
                             Map<String, dynamic> veri = snapshot.data![index];
                             bool isSelected = selectedIndex == index;
                             selectedBarcode = snapshot.data![index]['barkod'];
-
 
                             return GestureDetector(
                               onTap: () {
@@ -157,28 +167,27 @@ class _KargoSayfaState extends State<KargoSayfa> {
                 Expanded(
                   child: selectedIndex == null
                       ? Opacity(
-                    opacity:
-                    0.5, // Set opacity to make it transparent
-                    child: Row(
-                      children: [
-                        buton("Resim", Color.fromARGB(171, 27, 248, 75), Resim, context),
-                        buton("İmza", Colors.yellow, Imza, context),
-                        SilButonu("Sil", Colors.red, Sil, selectedBarcode),
-                      ],
-                    ),
-                  )
+                          opacity: 0.5, // Set opacity to make it transparent
+                          child: Row(
+                            children: [
+                              buton("Resim", Color.fromARGB(171, 27, 248, 75),Colors.black, Resim, context),
+                              buton("İmza", Colors.yellow,Colors.black, Imza, context),
+                              SilButonu(
+                                  "Sil", Colors.red,Colors.white, Sil, selectedBarcode),
+                            ],
+                          ),
+                        )
                       : Row(
-                    children: [
-                      buton("Resim", Color.fromARGB(171, 27, 248, 75), Resim, context),
-                      buton("İmza", Colors.yellow, Imza, context),
-                      SilButonu("Sil", Colors.red, Sil, selectedBarcode),
-                    ],
-                  ),
+                          children: [
+                            buton("Resim", Color.fromARGB(171, 27, 248, 75),Colors.black ,Resim, context),
+                            buton("İmza", Colors.yellow,Colors.black, Imza, context),
+                            SilButonu("Sil", Colors.red,Colors.white, Sil, selectedBarcode),
+                          ],
+                        ),
                 ),
                 Expanded(
-                    child: Row(children: [
-                  EkleButonu("Ekle", Colors.blue, Ekle)
-                ])),
+                    child:
+                        Row(children: [EkleButonu("Ekle", Colors.blue,Colors.white, Ekle)])),
               ],
             ),
           )
@@ -187,40 +196,39 @@ class _KargoSayfaState extends State<KargoSayfa> {
     );
   }
 
-  Widget EkleButonu(
-      String text, MaterialColor renk, Function() action) {
+  Widget EkleButonu(String text, MaterialColor renk,Color yazi, Function() action) {
     return Expanded(
       child: Card(
         color: renk,
         child: TextButton(
           onPressed: () => action(),
-          child: Text(text),
+          child: Text(text,style: TextStyle(color: yazi),),
         ),
       ),
     );
   }
 
   Widget SilButonu(
-      String text, MaterialColor renk, Function(String) action, String barkod) {
+      String text, MaterialColor renk,Color yazi, Function(String) action, String barkod) {
     return Expanded(
       child: Card(
         color: renk,
         child: TextButton(
-          onPressed:  () => action(barkod),
-          child: Text(text),
+          onPressed: () => action(barkod),
+          child: Text(text,style: TextStyle(color: yazi),),
         ),
       ),
     );
   }
 
-  Widget buton(String text, Color renk, Function(BuildContext) action,
+  Widget buton(String text, Color renk,Color yazi, Function(BuildContext) action,
       BuildContext context) {
     return Expanded(
       child: Card(
         color: renk,
         child: TextButton(
           onPressed: () => action(context),
-          child: Text(text),
+          child: Text(text,style: TextStyle(color: yazi),),
         ),
       ),
     );
@@ -240,6 +248,11 @@ class Satir extends StatelessWidget {
   final String islem;
   final bool isSelected;
 
+  final Color anaArkaRenk;
+  final Color anaYaziRenk;
+  final Color seciliArkaRenk;
+  final Color seciliYaziRenk;
+
   Satir({
     required this.tip,
     required this.evrakno,
@@ -251,28 +264,42 @@ class Satir extends StatelessWidget {
     required this.teslimtarihi,
     required this.teslimalan,
     required this.islem,
-    this.isSelected = false, // Default to not selected
+    this.anaArkaRenk = const Color.fromARGB(213, 220, 220, 220),
+    this.anaYaziRenk = const Color.fromARGB(255, 0, 0, 0),
+    this.seciliArkaRenk = const Color.fromARGB(255, 179, 179, 179),
+    this.seciliYaziRenk = const Color.fromARGB(255, 237, 237, 237),
+    this.isSelected = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final values = [
+      tip,
+      evrakno,
+      tarih,
+      carino,
+      unvan,
+      resim,
+      imza,
+      teslimtarihi,
+      teslimalan,
+      islem,
+    ];
+
     return Container(
-      color: isSelected ? const Color.fromARGB(200, 6, 7, 7) : const Color.fromARGB(
-          208, 26, 99, 214),
-      // Highlight selected item
+      padding: const EdgeInsets.only(top: 5),
       child: Row(
-        children: [
-          Blok(name: tip, width: 100, isSelected: isSelected,),
-          Blok(name: evrakno, width: 100, isSelected: isSelected),
-          Blok(name: tarih, width: 100, isSelected: isSelected),
-          Blok(name: carino, width: 100, isSelected: isSelected),
-          Blok(name: unvan, width: 100, isSelected: isSelected),
-          Blok(name: resim, width: 100, isSelected: isSelected),
-          Blok(name: imza, width: 100, isSelected: isSelected),
-          Blok(name: teslimtarihi, width: 100, isSelected: isSelected),
-          Blok(name: teslimalan, width: 100, isSelected: isSelected),
-          Blok(name: islem, width: 100, isSelected: isSelected),
-        ],
+        children: values
+            .map((value) => Blok(
+                  name: value,
+                  width: 100,
+                  isSelected: isSelected,
+                  anaArkaRenk: anaArkaRenk,
+                  anaYaziRenk: anaYaziRenk,
+                  seciliArkaRenk: seciliArkaRenk,
+                  seciliYaziRenk: seciliYaziRenk,
+                ))
+            .toList(),
       ),
     );
   }
@@ -282,24 +309,34 @@ class Blok extends StatelessWidget {
   final double width;
   final String name;
   final bool isSelected;
+  final Color anaArkaRenk;
+  final Color anaYaziRenk;
+  final Color seciliArkaRenk;
+  final Color seciliYaziRenk;
 
   const Blok({
     required this.name,
     required this.width,
     required this.isSelected,
+    this.anaArkaRenk = const Color.fromARGB(200, 200, 200, 200),
+    this.anaYaziRenk = const Color.fromARGB(200, 0, 0, 0),
+    this.seciliArkaRenk = const Color.fromARGB(200, 80, 74, 71),
+    this.seciliYaziRenk = const Color.fromARGB(200, 41, 41, 41),
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.only(left: 5),
-        child: Container(
-          width: width,
-          color: isSelected ? const Color.fromARGB(255, 47, 218, 185) : const Color.fromARGB(
-              34, 255, 255, 255),
-          height: 30,
-          child: Center(child: Text(name)),
-        ));
+    return Container(
+      width: width,
+      color: isSelected ? seciliArkaRenk : anaArkaRenk,
+      height: 30,
+      child: Center(
+        child: Text(
+          name,
+          style: TextStyle(color: isSelected ? seciliYaziRenk : anaYaziRenk),
+        ),
+      ),
+    );
   }
 }
