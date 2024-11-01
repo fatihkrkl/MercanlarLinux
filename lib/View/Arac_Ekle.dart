@@ -67,13 +67,7 @@ class Combo_Iki_State extends State<AracEkle> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => KargoSayfa(id: id, plaka: selectedValue!,),
-                    ),
-                  );
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => KargoEkle(id: id),
+                      builder: (context) => KargoSayfa(id: id, plaka: selectedValue!,nav: true,),
                     ),
                   );
                 },

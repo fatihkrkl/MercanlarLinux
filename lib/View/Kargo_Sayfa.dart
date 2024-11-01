@@ -7,8 +7,10 @@ import 'Imza_Sayfa.dart';
 class KargoSayfa extends StatefulWidget {
   final String id;
   final String plaka;
+  final bool nav;
+  const KargoSayfa({required this.id,required this.plaka,this.nav=false});
 
-  KargoSayfa({required this.id,required this.plaka});
+
 
   @override
   _KargoSayfaState createState() => _KargoSayfaState();
@@ -21,11 +23,22 @@ class _KargoSayfaState extends State<KargoSayfa> {
 
   @override
   void initState() {
-    kargoItems = DatabaseHelper().fetchKargo(widget.id);
     super.initState();
+    kargoItems = DatabaseHelper().fetchKargo(widget.id);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.nav) {
+        Ekle();
+      }
+    });
+
+  }
+  @override
+  void setState(VoidCallback fn) {
+    super.setState(fn);
+    kargoItems = DatabaseHelper().fetchKargo(widget.id);
   }
 
-  void refreshItems() {
+  void static; refreshItems() {
     setState(() {
       kargoItems = DatabaseHelper().fetchKargo(widget.id);
     });
@@ -35,15 +48,17 @@ class _KargoSayfaState extends State<KargoSayfa> {
     print("dsadsa");
   }
 
-  void Ekle(String barkod) async {
-    await Navigator.push(
+  void Ekle() async {
+    final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => KargoEkle(id: widget.id)),
-    ).then((val){
+    );
+    if (result == true) { // Check if the result is true
       setState(() {
-        refreshItems();
+        refreshItems(); // Refresh items if the result is true
+        Ekle();
       });
-    });
+    }
   }
 
   void Sil(String barkod) async {
@@ -63,7 +78,6 @@ class _KargoSayfaState extends State<KargoSayfa> {
 
   @override
   Widget build(BuildContext context) {
-    print(selectedIndex);
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
@@ -112,7 +126,7 @@ class _KargoSayfaState extends State<KargoSayfa> {
                                 });
                               },
                               child: Satir(
-                                tip: veri["tip"],
+                                tip: veri["barkod"],
                                 evrakno: veri["evrakno"],
                                 tarih: veri["tarih"],
                                 carino: veri["carino"],
@@ -163,7 +177,7 @@ class _KargoSayfaState extends State<KargoSayfa> {
                 ),
                 Expanded(
                     child: Row(children: [
-                  EkleButonu("Ekle", Colors.blue, Ekle, "3998")
+                  EkleButonu("Ekle", Colors.blue, Ekle)
                 ])),
               ],
             ),
@@ -174,12 +188,12 @@ class _KargoSayfaState extends State<KargoSayfa> {
   }
 
   Widget EkleButonu(
-      String text, MaterialColor renk, Function(String) action, String barkod) {
+      String text, MaterialColor renk, Function() action) {
     return Expanded(
       child: Card(
         color: renk,
         child: TextButton(
-          onPressed: () => action(barkod),
+          onPressed: () => action(),
           child: Text(text),
         ),
       ),
@@ -188,7 +202,6 @@ class _KargoSayfaState extends State<KargoSayfa> {
 
   Widget SilButonu(
       String text, MaterialColor renk, Function(String) action, String barkod) {
-    print(barkod);
     return Expanded(
       child: Card(
         color: renk,

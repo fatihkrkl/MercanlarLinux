@@ -88,8 +88,6 @@ class _AracSayfaState extends State<AracSayfa> {
         list.add(item);
       }
     });
-    //print(items);
-    //print(list);
   }
 
   @override
@@ -147,7 +145,6 @@ class _AracSayfaState extends State<AracSayfa> {
                 child: ListView.builder(
               itemCount: list.length,
               itemBuilder: (context, index) {
-                print(list.length);
                 return SizedBox(
                   height: 100,
                   child: Card(

@@ -1,4 +1,3 @@
-import 'package:image/image.dart' as img;
 import 'dart:typed_data';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -12,30 +11,32 @@ class ImzaSayfa extends StatefulWidget {
 
 class _ImzaSayfaState extends State<ImzaSayfa> {
   final DrawingController _drawingController = DrawingController();
-  List<int> imza = Uint8List(80);
-  Uint8List pngBytes=Uint8List(80);
-  late File file;
-  late MemoryImage _img;
 
- void _getImageData() async {
-    imza = await (await _drawingController.getImageData())?.buffer.asInt8List() as List<int>;
-    img.Image? image = img.decodeImage(Uint8List.fromList(imza));
-    if (image == null) {
-      print("Error decoding the image.");
-      return;
-    }
-    _img=MemoryImage(Uint8List.fromList(imza));
+  Uint8List pngBytes=Uint8List(80);
+  File? file;
+
+  @override
+  void initState() {
+    super.initState();
+    filePath();
+  }
+
+  Future<void> filePath() async {
     Directory directory = await getApplicationDocumentsDirectory();
     String filePath = '${directory.path}/imgfile.jpeg';
-
-    await File(filePath).writeAsBytes(Uint8List.fromList(imza));
     file= File(filePath);
+  }
+
+ void _getImageData() async {
+   List<int> imza = await (await _drawingController.getImageData())?.buffer.asInt8List() as List<int>;
+    await file?.writeAsBytes(Uint8List.fromList(imza));
+   print(file?.readAsBytesSync());
     setState(() {});
   }
 
 
-  void reset() {
-    imza = Uint8List(80);
+  Future<void> reset() async {
+    await file?.writeAsBytes(Uint8List.fromList(Uint8List(80)));
     _drawingController.clear();
     setState(() {});
   }
@@ -79,20 +80,24 @@ class _ImzaSayfaState extends State<ImzaSayfa> {
                 ],
               ),
               FutureBuilder<bool>(
-                future: file.exists().then((exists) => exists),
+                future: file?.exists().then((exists) => exists),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator()); // Loading indicator
-                  } else if (snapshot.hasError ) {
-                    return Center(child: Text("Image does not exist.")); // Handle error case
-                  } else if(!snapshot.data!){
-                    return Center(child: Container(),);
-                  }else {
-                    // içi boş olunca böyle gözüküyor onu kontrol etmek lazım
-                    return Expanded(child: Image.memory(Uint8List.fromList(imza))); // Show the image
+                    return Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text("Error checking image existence."));
+                  } else if (snapshot.data == false || file == null) {
+                    return Center(child: Container());
+                  } else {
+                    imageCache.clear();
+                    if(!file!.readAsBytesSync().every((byte) => byte == 0)){
+                      return Expanded(child: Image.file(file!, key: UniqueKey()));
+                    }else{
+                      return Expanded(child: Container());
+                    }
                   }
                 },
-              )
+              ),
             ],
           ),
         ));

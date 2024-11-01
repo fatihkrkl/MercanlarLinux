@@ -135,13 +135,7 @@ class ComboState extends State<KargoEkle> {
                 child: TextButton(
                   onPressed: () async {
                     await DatabaseHelper().insertKargoD(barkodController.text, widget.id);
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => KargoEkle(id: widget.id),
-                      ),
-                    );
+                    Navigator.pop(context,true);
                   },
                   child: Text("Kaydet"),
                 ),
