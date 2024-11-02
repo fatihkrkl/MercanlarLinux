@@ -45,12 +45,12 @@ class _GirisSayfaState extends State<GirisSayfa> {
                     title: Text(txt),
                     onTap: () async {
                       selectedDb=index;
-                      Navigator.pop(context); // Dismiss bottom sheet
+
                       print(token);
                       bool? db = await setTokenDatabase(token, list[index]['databaseId']);
                       if (db){
                         List<Map<String,dynamic>> list2= await getDepolist(token);
-                        _depoListe(context,list2,token);
+                         _depoListe(context,list2,token);
                         try{
 
                         }catch(ex){
@@ -58,6 +58,7 @@ class _GirisSayfaState extends State<GirisSayfa> {
                         }
 
                       }
+                      Navigator.pop(context); // Dismiss bottom sheet
                     },
                   );
                 },
@@ -178,9 +179,10 @@ class _GirisSayfaState extends State<GirisSayfa> {
                 controller: scrollController,
                 itemCount: list.length, // Replace with your list's length
                 itemBuilder: (context, index) {
+                  String txt = list[index]['databaseName'];
                   return ListTile(
-                    leading: Icon(Icons.person),
-                    title: Text("list[index]['aciklama']"),
+                    leading: const Icon(Icons.person),
+                    title: const Text("list[index]['aciklama']"),
                     onTap: () async {
                       selectedDepo=index;
                       bool depo= await setTokenDepoId(token, list[index]['depoId']);
