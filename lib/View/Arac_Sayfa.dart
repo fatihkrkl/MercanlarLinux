@@ -177,7 +177,7 @@ class _AracSayfaState extends State<AracSayfa> {
       child: Row(
         children: [
           Text(
-            id.length > 9 ? 'Fiş\n#${id.substring(0, 9)}...' : 'Fiş\n#$id',
+            id.length > 6 ? 'Fiş\n#${id.substring(0, 6)}...' : 'Fiş\n#$id',
             style: const TextStyle(fontSize: 18),
           ),
           Expanded(
